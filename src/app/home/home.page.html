@@ -1,20 +1,91 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-header [translucent]="true"> </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+<ion-content [fullscreen]="true" class="home-container">
+  <ion-grid>
+    <ion-row class="search-row">
+      <ion-col>
+        <div class="search-box">
+          <button class="btn-search">
+            <ion-icon name="search-outline"></ion-icon>
+          </button>
+          <input
+            type="text"
+            class="input-search"
+            [(ngModel)]="cityName"
+            (blur)="loadData()"
+            placeholder="Search..."
+          />
+        </div>
+      </ion-col>
+    </ion-row>
+    <div *ngIf="!loading">
+      <ion-row class="data-row">
+        <ion-col>
+          <p id="date">{{todayDate | date:"EEEE dd MMM YYYY"}}</p>
+          <span id="city">{{name}}</span>
+          <span id="country"> ,{{country}}</span>
+          <p id="time">{{time}}</p>
+        </ion-col>
+      </ion-row>
+      <ion-row class="temp-row">
+        <ion-row class="icon-row">
+          <ion-col>
+            <div>
+              <img
+                src="{{this.weatherIcon}}"
+                alt="current weather"
+                width="50px"
+                height="50px"
+              />
+              <span>{{weaterDetails?.main}}</span>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-col>
+          <span id="span1"
+            >{{(weatherInfo?.temp - 273.15).toFixed(0)}}<sup class="sup"
+              >o</sup
+            ></span
+          >
+          <!-- <span id="span3">C</span> -->
+        </ion-col>
+      </ion-row>
+      <ion-row class="progress-row">
+        <ion-card>
+          <ion-card-content class="progress-content">
+            <ion-col *ngFor="let w of w_data|keyvalue">
+              <span id="progress-data">
+                <p>{{w.key}}</p>
+                <span>{{w.value}}</span>
+                <span *ngIf="w.key =='humidity'"> % </span>
+                <span *ngIf="w.key =='rain'"> % </span>
+                <span *ngIf="w.key =='wind'"> MPH </span>
+              </span>
+            </ion-col>
+          </ion-card-content>
+        </ion-card>
+      </ion-row>
+      <ion-row class="forecast-row">
+        <ion-col
+          *ngFor="let item of weatherForecast;"
+          size="3"
+          class="forecast-col"
+        >
+          <p>{{item.time}}</p>
+          <img
+            src="{{item.weather[0].icon}}"
+            alt="current weather"
+            width="50px"
+            height="50px"
+          />
+          <p>{{(item.main.temp_min - 273.15).toFixed(0)}}<sup>o</sup></p>
+          <p>{{(item.main.temp_max -273.15).toFixed(0)}}<sup>o</sup></p>
+        </ion-col>
+      </ion-row>
+    </div>
+    <div *ngIf="loading" class="nodata">
+      <ion-img src="../../assets/nodata.png"></ion-img>
+      <p>Please search a city do get the weather Details</p>
+    </div>
+  </ion-grid>
 </ion-content>

@@ -3,9 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  API_KEY:'e3599b713c849d17de4e31c790e252a9',
+  API_URL:'https://api.openweathermap.org/data/2.5/',
+  API_ICONS:'https://openweathermap.org/img/wn/',
 };
-
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
