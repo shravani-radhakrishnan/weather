@@ -1,91 +1,156 @@
-<ion-header [translucent]="true"> </ion-header>
+<ion-header [translucent]="true"></ion-header>
 
-<ion-content [fullscreen]="true" class="home-container">
-  <ion-grid>
-    <ion-row class="search-row">
-      <ion-col>
-        <div class="search-box">
-          <button class="btn-search">
-            <ion-icon name="search-outline"></ion-icon>
-          </button>
-          <input
-            type="text"
-            class="input-search"
-            [(ngModel)]="cityName"
-            (blur)="loadData()"
-            placeholder="Search..."
-          />
+<ion-content [fullscreen]="true" class="weather-app">
+  <main class="phone-frame">
+    <section class="sky-panel">
+      <div class="status-bar">
+        <span>{{ time || "9:41 AM" }}</span>
+        <div class="phone-indicators">
+          <ion-icon name="cellular-outline"></ion-icon>
+          <ion-icon name="wifi-outline"></ion-icon>
+          <ion-icon name="battery-full-outline"></ion-icon>
         </div>
-      </ion-col>
-    </ion-row>
-    <div *ngIf="!loading">
-      <ion-row class="data-row">
-        <ion-col>
-          <p id="date">{{todayDate | date:"EEEE dd MMM YYYY"}}</p>
-          <span id="city">{{name}}</span>
-          <span id="country"> ,{{country}}</span>
-          <p id="time">{{time}}</p>
-        </ion-col>
-      </ion-row>
-      <ion-row class="temp-row">
-        <ion-row class="icon-row">
-          <ion-col>
-            <div>
-              <img
-                src="{{this.weatherIcon}}"
-                alt="current weather"
-                width="50px"
-                height="50px"
-              />
-              <span>{{weaterDetails?.main}}</span>
-            </div>
-          </ion-col>
-        </ion-row>
-        <ion-col>
-          <span id="span1"
-            >{{(weatherInfo?.temp - 273.15).toFixed(0)}}<sup class="sup"
-              >o</sup
-            ></span
-          >
-          <!-- <span id="span3">C</span> -->
-        </ion-col>
-      </ion-row>
-      <ion-row class="progress-row">
-        <ion-card>
-          <ion-card-content class="progress-content">
-            <ion-col *ngFor="let w of w_data|keyvalue">
-              <span id="progress-data">
-                <p>{{w.key}}</p>
-                <span>{{w.value}}</span>
-                <span *ngIf="w.key =='humidity'"> % </span>
-                <span *ngIf="w.key =='rain'"> % </span>
-                <span *ngIf="w.key =='wind'"> MPH </span>
-              </span>
-            </ion-col>
-          </ion-card-content>
-        </ion-card>
-      </ion-row>
-      <ion-row class="forecast-row">
-        <ion-col
-          *ngFor="let item of weatherForecast;"
-          size="3"
-          class="forecast-col"
-        >
-          <p>{{item.time}}</p>
-          <img
-            src="{{item.weather[0].icon}}"
-            alt="current weather"
-            width="50px"
-            height="50px"
+      </div>
+
+      <form class="top-search" [class.search-open]="searchOpen" (ngSubmit)="loadData($event)">
+        <label class="location-field">
+          <ion-icon name="location"></ion-icon>
+          <input
+            #cityInput
+            type="text"
+            name="city"
+            [(ngModel)]="cityName"
+            placeholder="Search city"
+            autocomplete="off"
           />
-          <p>{{(item.main.temp_min - 273.15).toFixed(0)}}<sup>o</sup></p>
-          <p>{{(item.main.temp_max -273.15).toFixed(0)}}<sup>o</sup></p>
-        </ion-col>
-      </ion-row>
-    </div>
-    <div *ngIf="loading" class="nodata">
-      <ion-img src="../../assets/nodata.png"></ion-img>
-      <p>Please search a city do get the weather Details</p>
-    </div>
-  </ion-grid>
+        </label>
+        <button class="menu-button" type="button" (click)="handleSearchClick($event)" [disabled]="searching" aria-label="Search weather">
+          <ion-icon [name]="searching ? 'sync-outline' : 'search-outline'"></ion-icon>
+        </button>
+      </form>
+
+      <div class="date-line">Today, {{ todayDate | date: "MMM d, h:mm a" }}</div>
+      <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+      <section class="current-weather" *ngIf="!loading; else emptyState">
+        <div class="temperature-wrap">
+          <h1>{{ currentTemp }}<span>°C</span></h1>
+          <p>{{ name }}<span *ngIf="country">, {{ country }}</span></p>
+        </div>
+
+        <div class="weather-art">
+          <img *ngIf="weatherIcon" [src]="weatherIcon" [alt]="weaterDetails?.description || 'Current weather'" />
+        </div>
+
+        <div class="condition-pill">
+          <span>{{ weaterDetails?.description || weaterDetails?.main }}</span>
+          <img *ngIf="weatherIcon" [src]="weatherIcon" alt="" />
+        </div>
+
+        <div class="range-pill">
+          <span>↑ {{ highTemp }}°</span>
+          <span>↓ {{ lowTemp }}°</span>
+        </div>
+      </section>
+
+      <ng-template #emptyState>
+        <section class="current-weather empty-state">
+          <div class="temperature-wrap">
+            <h1>--<span>°C</span></h1>
+            <p>{{ searching ? "Loading weather" : "Add a place" }}</p>
+          </div>
+          <div class="condition-pill">
+            <span>Tap search to start</span>
+            <ion-icon name="partly-sunny-outline"></ion-icon>
+          </div>
+        </section>
+      </ng-template>
+
+      <section class="stats-card" *ngIf="weatherInfo; else introStats">
+        <article>
+          <ion-icon name="rainy-outline"></ion-icon>
+          <strong>{{ rainChance }}%</strong>
+          <span>Chance of rain</span>
+        </article>
+        <article>
+          <ion-icon name="navigate-outline"></ion-icon>
+          <strong>{{ windSpeed }} km/h</strong>
+          <span>Wind speed</span>
+        </article>
+        <article>
+          <ion-icon name="water-outline"></ion-icon>
+          <strong>{{ humidity }}%</strong>
+          <span>Humidity</span>
+        </article>
+      </section>
+
+      <ng-template #introStats>
+        <section class="stats-card intro-card">
+          <article>
+            <ion-icon name="search-outline"></ion-icon>
+            <strong>Search</strong>
+            <span>Find a city</span>
+          </article>
+          <article>
+            <ion-icon name="thermometer-outline"></ion-icon>
+            <strong>Live</strong>
+            <span>Current weather</span>
+          </article>
+          <article>
+            <ion-icon name="time-outline"></ion-icon>
+            <strong>Forecast</strong>
+            <span>Hourly updates</span>
+          </article>
+        </section>
+      </ng-template>
+    </section>
+
+    <section class="forecast-sheet">
+      <div class="sheet-handle"></div>
+
+      <div class="section-title">
+        <h2>Hourly Forecast</h2>
+        <div class="forecast-actions">
+          <button type="button" (click)="scrollForecast('left')" aria-label="Scroll forecast left">
+            <ion-icon name="chevron-back-outline"></ion-icon>
+          </button>
+          <span>{{ weatherForecast.length || 0 }} slots</span>
+          <button type="button" (click)="scrollForecast('right')" aria-label="Scroll forecast right">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+
+      <div
+        #hourlyScroller
+        class="hourly-list"
+        *ngIf="weatherForecast.length; else noForecast"
+        (wheel)="onForecastWheel($event)"
+      >
+        <article class="hour-card" *ngFor="let item of weatherForecast | slice: 0:16">
+          <img class="forecast-icon" [src]="item.weather[0].icon" alt="Forecast weather" />
+          <span>{{ item.time }}</span>
+          <strong>{{ toCelsius(item.main.temp) }}°</strong>
+        </article>
+      </div>
+
+      <ng-template #noForecast>
+        <div class="no-forecast">Search to load the next hourly forecast.</div>
+      </ng-template>
+
+      <div class="tomorrow-label">Tomorrow</div>
+
+      <article class="tomorrow-card" *ngIf="weatherForecast.length">
+        <img class="forecast-icon" [src]="weatherForecast[8]?.weather?.[0]?.icon || weatherIcon" alt="Tomorrow weather" />
+        <div>
+          <h3>Tomorrow</h3>
+          <p>{{ weatherForecast[8]?.weather?.[0]?.description || weaterDetails?.description || "Forecast" }}</p>
+        </div>
+        <div class="tomorrow-range">
+          <span>↑ {{ forecastHigh }}°</span>
+          <span>↓ {{ forecastLow }}°</span>
+        </div>
+      </article>
+    </section>
+  </main>
 </ion-content>

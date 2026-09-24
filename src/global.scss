@@ -24,3 +24,514 @@
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
+
+app-home ion-header {
+  display: none;
+}
+
+app-home ion-content.weather-app {
+  --background: #ebe8f2;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+app-home .phone-frame {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  overflow: hidden;
+  color: #fff;
+  background: linear-gradient(180deg, #2919a6 0%, #543bd8 38%, #8172ff 67%, #b9dcff 100%);
+  position: relative;
+}
+
+app-home .phone-frame::before {
+  content: "";
+  position: absolute;
+  left: -80px;
+  right: -80px;
+  top: 118px;
+  height: 265px;
+  background:
+    radial-gradient(circle at 18% 28%, rgba(112, 70, 217, 0.72) 0, rgba(112, 70, 217, 0.72) 44px, transparent 46px),
+    radial-gradient(circle at 47% 54%, rgba(171, 151, 255, 0.58) 0, rgba(171, 151, 255, 0.58) 76px, transparent 78px),
+    radial-gradient(circle at 76% 30%, rgba(93, 80, 209, 0.62) 0, rgba(93, 80, 209, 0.62) 54px, transparent 56px);
+  opacity: 0.95;
+}
+
+app-home .phone-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.88) 0, rgba(255, 255, 255, 0.88) 1px, transparent 2px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.45) 0, rgba(255, 255, 255, 0.45) 1px, transparent 2px);
+  background-position: 22px 92px, 238px 156px;
+  background-size: 92px 132px, 128px 172px;
+  pointer-events: none;
+}
+
+app-home .sky-panel,
+app-home .forecast-sheet {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+app-home .sky-panel {
+  min-height: 58vh;
+  min-height: 58dvh;
+  padding: 18px 30px 28px;
+}
+
+app-home .status-bar,
+app-home .top-search,
+app-home .phone-indicators,
+app-home .location-field,
+app-home .stats-card,
+app-home .range-pill,
+app-home .condition-pill,
+app-home .section-title,
+app-home .tomorrow-card,
+app-home .tomorrow-range {
+  display: flex;
+  align-items: center;
+}
+
+app-home .status-bar {
+  justify-content: space-between;
+  height: 24px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+app-home .phone-indicators {
+  gap: 6px;
+  font-size: 17px;
+}
+
+app-home .top-search {
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+app-home .location-field {
+  flex: 0 1 auto;
+  width: 138px;
+  min-width: 0;
+  gap: 7px;
+  padding: 0 2px;
+  overflow: hidden;
+  transition: width 180ms ease, background 180ms ease, padding 180ms ease;
+}
+
+app-home .top-search.search-open .location-field {
+  width: calc(100% - 54px);
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+app-home .location-field ion-icon {
+  flex: 0 0 auto;
+  font-size: 21px;
+}
+
+app-home .location-field input {
+  width: 100%;
+  min-width: 0;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  color: #fff;
+  background: transparent;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 34px;
+}
+
+app-home .top-search:not(.search-open) .location-field input {
+  pointer-events: none;
+}
+
+app-home .location-field input::placeholder {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+app-home .menu-button {
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+app-home .menu-button ion-icon {
+  font-size: 22px;
+}
+
+app-home .menu-button[disabled] {
+  opacity: 0.65;
+}
+
+app-home .date-line {
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+app-home .error-message {
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(255, 75, 96, 0.24);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+app-home .current-weather {
+  position: relative;
+  min-height: 235px;
+  margin-top: 8px;
+}
+
+app-home .temperature-wrap h1 {
+  margin: 0;
+  color: #fff;
+  font-size: 126px;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 0.86;
+  text-shadow: 0 18px 44px rgba(30, 16, 112, 0.24);
+}
+
+app-home .temperature-wrap h1 span {
+  margin-left: 3px;
+  vertical-align: top;
+  font-size: 36px;
+}
+
+app-home .temperature-wrap p {
+  margin: 13px 0 0;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+app-home .weather-art {
+  position: absolute;
+  right: 37px;
+  bottom: 44px;
+  width: 132px;
+  height: 92px;
+  display: grid;
+  place-items: center;
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+app-home .weather-art img {
+  display: block;
+  width: 118px;
+  height: 118px;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 20px rgba(23, 17, 86, 0.24));
+}
+
+app-home .condition-pill {
+  position: absolute;
+  right: 0;
+  top: 8px;
+  gap: 8px;
+  writing-mode: vertical-rl;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+app-home .condition-pill ion-icon {
+  font-size: 22px;
+}
+
+app-home .condition-pill img {
+  width: 25px;
+  height: 25px;
+  object-fit: contain;
+  transform: rotate(90deg);
+}
+
+app-home .range-pill {
+  width: max-content;
+  gap: 17px;
+  margin-top: 22px;
+  padding: 11px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+app-home .stats-card {
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 6px;
+  padding: 18px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 18px 44px rgba(47, 29, 132, 0.24);
+}
+
+app-home .stats-card article {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
+}
+
+app-home .stats-card ion-icon {
+  color: #fff;
+  font-size: 20px;
+}
+
+app-home .stats-card strong,
+app-home .stats-card span {
+  display: block;
+}
+
+app-home .stats-card strong {
+  margin-top: 5px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+app-home .stats-card span {
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 10px;
+  line-height: 1.25;
+}
+
+app-home .forecast-sheet {
+  min-height: 42vh;
+  min-height: 42dvh;
+  margin-top: -18px;
+  padding: 15px 30px 32px;
+  border-radius: 34px 34px 0 0;
+  color: #191727;
+  background: #fff;
+  box-shadow: 0 -18px 38px rgba(25, 18, 76, 0.16);
+}
+
+app-home .sheet-handle {
+  width: 25px;
+  height: 3px;
+  margin: 0 auto 23px;
+  border-radius: 99px;
+  background: #dedce2;
+}
+
+app-home .section-title {
+  justify-content: space-between;
+  gap: 14px;
+}
+
+app-home .section-title h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+app-home .section-title span {
+  color: rgba(25, 23, 39, 0.5);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+app-home .forecast-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+app-home .forecast-actions button {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #191727;
+  background: #f2f2f8;
+  box-shadow: inset 0 0 0 1px rgba(25, 23, 39, 0.05);
+}
+
+app-home .forecast-actions ion-icon {
+  font-size: 18px;
+}
+
+app-home .hourly-list {
+  display: flex;
+  width: calc(100% + 60px);
+  gap: 12px;
+  margin: 20px -30px 0;
+  padding: 0 30px 14px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scroll-padding: 30px;
+  scroll-snap-type: x proximity;
+  touch-action: pan-x;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+app-home .hourly-list::-webkit-scrollbar {
+  display: none;
+}
+
+app-home .hour-card {
+  flex: 0 0 76px;
+  min-height: 95px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 24px;
+  background: #f8f8fb;
+  scroll-snap-align: start;
+}
+
+app-home img.forecast-icon {
+  display: block;
+  width: 31px;
+  height: 31px;
+  object-fit: contain;
+}
+
+app-home .hour-card span {
+  color: rgba(25, 23, 39, 0.48);
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+app-home .hour-card strong {
+  color: #11101a;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+app-home .no-forecast {
+  margin-top: 18px;
+  padding: 22px;
+  border-radius: 24px;
+  color: rgba(25, 23, 39, 0.58);
+  background: #f7f7fb;
+  text-align: center;
+  font-size: 13px;
+}
+
+app-home .tomorrow-label {
+  margin-top: 9px;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+app-home .tomorrow-card {
+  min-height: 76px;
+  gap: 13px;
+  margin-top: 15px;
+  padding: 14px 17px;
+  border-radius: 26px;
+  background: #fff;
+  box-shadow: 0 18px 44px rgba(35, 30, 63, 0.11);
+}
+
+app-home .tomorrow-card h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+app-home .tomorrow-card p {
+  max-width: 125px;
+  margin: 5px 0 0;
+  overflow: hidden;
+  color: rgba(25, 23, 39, 0.54);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+app-home .tomorrow-range {
+  gap: 11px;
+  margin-left: auto;
+  color: #191727;
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+@media (min-width: 760px) {
+  app-home ion-content.weather-app {
+    --background: radial-gradient(circle at 20% 18%, rgba(120, 105, 255, 0.23), transparent 28%), #edf1fb;
+  }
+
+  app-home .phone-frame {
+    width: 390px;
+    min-height: 760px;
+    margin: 16px auto;
+    border: 7px solid #101018;
+    border-radius: 48px;
+    box-shadow: 0 28px 70px rgba(19, 18, 43, 0.28);
+  }
+
+  app-home .sky-panel {
+    min-height: 420px;
+    padding-top: 14px;
+    padding-bottom: 20px;
+  }
+
+  app-home .current-weather {
+    min-height: 205px;
+  }
+
+  app-home .forecast-sheet {
+    min-height: 310px;
+    padding-bottom: 24px;
+  }
+}
+
+@media (max-width: 370px) {
+  app-home .sky-panel,
+  app-home .forecast-sheet {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+
+  app-home .temperature-wrap h1 {
+    font-size: 106px;
+  }
+
+  app-home .weather-art {
+    right: 22px;
+    transform: scale(0.9);
+    transform-origin: right bottom;
+  }
+}
